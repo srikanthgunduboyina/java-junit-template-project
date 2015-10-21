@@ -1,10 +1,10 @@
 <?xml version="1.0"?>   
-<project name="java-junit-template-project" default="test" basedir=".">
+<project name="java-junit-template-project" xmlns:jacoco="antlib:org.jacoco.ant" default="test" basedir=".">
   <property name="main.build.dir" value="build/main" />  
   <property name="main.src.dir" value="src" />
   <property name="test.build.dir" value="build/test" />
   <property name="test.src.dir" value="test" />
-
+  <property name="jacoco.dir" value="/var/lib/jenkins/plugins/jacoco"/>
   <path id="classpath.base" />
 
   <path id="classpath.test">
@@ -31,9 +31,14 @@
     <echo message="Build done" />
   </target>
    
+  <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+    		<classpath location="${jacoco.dir}/WEB-INF/lib/org.jacoco.ant-0.7.5.201505241946.jar"/>
+	</taskdef>
+   
   <!-- Test and build all files  -->
   <!-- To run this: use "ant" (default) or "ant run" -->
   <target name="run" depends="build">
+    <jacoco:coverage destfile="${test.build.dir}/jacoco.exec">
     <junit printsummary="on" haltonfailure="yes">
         <classpath>
           <path refid="classpath.test" />
@@ -44,6 +49,7 @@
             <fileset dir="${test.src.dir}" includes="**/*Test*.java" />
         </batchtest>
     </junit>
+    </jacoco:coverage>
   </target>
    
   <!-- delete all class files -->
